@@ -181,7 +181,7 @@ Identity and Ones Matrices:
 \end{align*}
 \end{example}
 
-Next we define two operations of interest in later discussions and how the rank of matrices changes (or doesn't) under those operations.
+Next we define two operations of interest in later discussions and how the rank is affected by those operations.
 
 \begin{definition}
   Tensor Product:
@@ -236,13 +236,191 @@ Next we define two operations of interest in later discussions and how the rank 
   \end{equation*}
 \end{example}
 
-For each of these operations and for matrices over fields we have the following facts:
+In addition to these operations we have the following properties:
 
 \begin{fact}
-
+\begin{alignat*}{3}
+  &rk_{F}(c \cdot A)   && = \, \, &&rk_{F}(A)\ \mathsf{where}\ c \in F, c \neq 0 \\
+  &rk_{F}(A + B)       &&\leq &&rk_{F}(A) + rk_{F}(B) \\
+  &rk_{F}(A + B)       &&\geq &&|rk_{F}(A) - rk_{F}(B)| \\
+  &rk_{F}(A \otimes B) &&= &&(rk_{F}(A))(rk_{F}(B)) \\
+  & A^{\otimes n}      &&= &&A \otimes \ldots \otimes A\ n\ \mathsf{times}
+\end{alignat*}
 \end{fact}
 
+\begin{proposition}
+  Rank of the Entry-wise Product
+  \begin{equation*}
+    &rk_{F}(A \cdot B) &&\leq &&(rk_{F}(A))(rk_{F}(B))
+  \end{equation*}
+\end{proposition}
 
+\begin{proof}
+  The proof is clear once it is observed that the entry-wise produce of $A$ and $B$ is a sub-matrix of the tensor product of the same two matrices.
+\end{proof}
+
+\section{The Rank Bound} \label{sec:rank-bound}
+
+As we saw the fooling set method for finding lower bounds on communication protocols isn't effective in some important situations. With that in mind we examine The Rank Bound method which uses the rank of the characteristic matrix of for a given function $f$ and its rectangles to establish a lower bound on the number of those rectangles.
+
+\begin{definition}
+  The characteristic matrix of $R = A \times B \subseteq X \times Y$ is constructed by including all rows and columns from the characteristic function of $f$ but only the values from the rectangle $R$.
+  \begin{equation*}
+    M_R =
+    \begin{bmatrix}
+      1 & \cdots & 1 & 0 & \cdots & 0 \\
+      \vdots & \ddots & \vdots & \vdots & \ddots & 0 \\
+      1 & \cdots & 1 & 0 & \cdots & 0 \\
+      0 & \cdots & 0 & 0 & \cdots & 0 \\
+      \vdots & \ddots & \vdots & \vdots & \ddots & 0 \\
+      0 & \cdots & 0 & 0 & \cdots & 0
+    \end{bmatrix}
+  \end{equation*}
+
+Here the rows and columns in $A$ and $B$ have been arranged into the top left corner (since they form a rectangle).
+\end{definition}
+
+\begin{fact}
+ Due to the construction of the matrix,
+  \begin{equation*}
+    rk(M_R) = 1
+  \end{equation*}
+\end{fact}
+
+\begin{theorem}
+  For all fields $F$ and functions $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}^n $
+  \begin{equation*}
+    D(f) \geq \lceil log_2(rk_{F}(M_f)) \rceil
+  \end{equation*}
+\end{theorem}
+
+\begin{proof}
+Let $c = D(f)$, then there are $2^c$ $f$-monochromatic rectangles $R_1 \ldots R_{2^c}$ such that,
+\begin{equation*}
+  X \times Y = \bigsqcup_{i=1}^{2^c} R_i
+\end{equation*}
+
+Then since they are disjoint this implies that the sum of the characteristic matrices for the $f$-monochromatic rectangles for $f$ is the characteristic matrix for $f$ itself. Intuitively since each is rectangle is pairwise disjoint summing any two of them can only ``fill-in'' the ``empty'' areas of the other matrix.
+
+\begin{equation*}
+  M_f = \sum_{i:f(R_i) = 1}^{2^c} M_{R_i} \quad
+    \Rightarrow \quad rk_{F}(M_f) \leq \sum_{i:f(R_i) = 1}^{2^c} rk_{F}(M_{R_i})
+\end{equation*}
+
+By the property of matrix rank under addition we have the above implication. From this and the earlier observation that the characteristic matrix for each $R$ is rank one we can see that $rk_{F}(M_f) \leq |\{\, i\, |\, f(R_i) = 1 \}| \leq 2^c$ and we conclude that $D(f) = c >= log_2(rk_{F}(M_f))$.
+\end{proof}
+
+\begin{corollary}
+  \begin{equation*}
+    D(f) \geq \lceil log_2(rk_{F}(M_f) + 1) \rceil
+  \end{equation*}
+\end{corollary}
+
+
+Which can be seen by considering, again, the zero rectangles.
+
+\begin{equation*}
+  2^c \geq |\{\, i\, |\, f(R_i) = 1 \}| + |\{\, i\, |\, f(R_i) = 0 \}|
+\end{equation*}
+
+\section{Rank Bound Examples} \label{sec:rank-bound-eg}
+
+To get an intuition for how, and how well, this method works we examine three examples $\mathtt{EQ}_n$, $\mathtt{GT}_n$, $\mathtt{DISJ}_n$.
+
+\begin{example} Equality.
+  For the equality function we have the characteristic matrix such that,
+
+  \begin{equation*}
+    M_{\mathtt{EQ}_n} = I_{2^n}
+  \end{equation*}
+
+  We observed earlier that the rank of the identity matrix is exactly its width (or height) so $rk_{F}(M_{\mathtt{EQ}_n}) = 2^n$ which implies that $D(\mathtt{EQ}_n) \geq \lceil log(2^n + 1) \rceil = n + 1$. Finally we know that his is tight due to the trivial implementation of the protocol.
+\end{example}
+
+\begin{example} Greater Than.
+  For the greater than function we have the characteristic matrix,
+
+\begin{equation*}
+  M_{\mathtt{GT}_n} =
+  \begin{bmatrix}
+  1 & 0 & \cdots & 0 \\
+  1 & 1 & \cdots & 0 \\
+  \vdots & \vdots & \ddots & \vdots \\
+  1 & 1 & \cdots & 1
+  \end{bmatrix}
+\end{equation*}
+
+Since the rank of this matrix is also $2^n$ we have the same inequality as in the previous example which is again tight.
+\end{example}
+
+\begin{example} Disjointness.
+  We conclude with a slightly more complex example in $\mathtt{DISJ}_n$. Recall that
+
+  \begin{equation*}
+    \mathtt{DISJ}_{n}(x,y) = \bigwedge_{i=1}^{n} \overline{(x_i \land y_i)}
+  \end{equation*}
+
+  Intuitively this is the position wise $\land$ and negation of each bit position in the bit vectors $x$ and $y$ and then the fold of $land$ over the resulting bit vector. This produces the matrix,
+
+  \begin{equation*}
+    M_{\mathtt{DISJ}_n} = \left[ \bigwedge_{i=1}^{n} \overline{(x_i \land y_i)} \right]_{x,y \in {0,1}^n}
+  \end{equation*}
+
+  Which is the value of the previously defined bit operation at each position in the matrix for each pair of inputs. If we consider this from an algebraic point of view where $\land$ maps to multiplication and negation maps to subtraction from 1,  the characteristic matrix can be defined as,
+
+  \begin{equation*}
+    M_{\mathtt{DISJ}_n} = \left[ \prod_{i=1}^{n} (1 - x_i y_i)} \right]_{x,y \in {0,1}^n}
+  \end{equation*}
+
+  We can show that this is the tensor power of the following matrix, by an inductive argument.
+
+  \begin{equation*}
+    \begin{bmatrix}
+      1 & 1 \\
+      1 & 0
+    \end{bmatrix}^{\otimes n}
+  \end{equation*}
+
+  \begin{proof} We proceed by induction on the size of the matrix $M_{\mathtt{DISJ}_1$. Base case,
+    \begin{equation*}
+      M_{\mathtt{DISJ}_1} =
+        \begin{bmatrix}
+          1 & 1 \\
+          1 & 0
+        \end{bmatrix}
+      \end{equation*}
+
+      And the inductive case,
+
+      \begin{equation*}
+        M_{\mathtt{DISJ}_1} =
+        \begin{bmatrix}
+          M_{\mathtt{DISJ}_{n-1}} & M_{\mathtt{DISJ}_{n-1}} \\
+          M_{\mathtt{DISJ}_{n-1}} & 0
+        \end{bmatrix}
+      \end{equation*}
+
+      You can see that this construction is correct by considering the places where the ones and zeros arise at points in the matrix. That is, in the bottom right corner of a given quadrant of the matrix there will at least one overlap of bits such that the negation of the $\land$ of each bit will produce a 0 and the $\land$ of all of the bits together will produce a 0. This can be reduced to the following,
+
+      \begin{align*}
+        M_{\mathtt{DISJ}_n} =
+        \begin{bmatrix}
+          1 & 0 \\
+          1 & 0
+        \end{bmatrix}
+        \otimes
+        M_{\mathtt{DISJ}_{n-1}}
+        \Rightarrow
+        M_{\mathtt{DISJ}_n} =
+        \begin{bmatrix}
+          1 & 0 \\
+          1 & 0
+        \end{bmatrix} ^{\otimes n}
+      \end{align*}
+  \end{proof}
+
+      Finally from this we can say that $rk(M_{\mathtt{DISJ}_n}) = 2^n$ since the rank of the base case is 2 and we take the tensor produce n times concluding our examples.
+\end{example}
 \bibliographystyle{abbrv}
 \bibliography{1}
 
