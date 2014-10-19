@@ -1,0 +1,95 @@
+\documentclass[usletter]{article}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{scribe}
+\usepackage[margin=1.5in]{geometry}
+
+\newcommand[0]
+
+\begin{document}
+
+
+\makeheader{John Bender}
+           {October 10, 2014}
+           {3}
+           {Fooling Set Efficacy and The Rank Bound}
+
+\noindent
+
+Fooling sets as defined and described in lecture 2 are one technique for establishing a lower bound on the complexity of the communication protocol for deterministic functions. Here we examine a few examples that highlight how well and how poorly the technique works and we'll also see that, in many cases, the fooling set technique will not provide a good lower bound. We will conclude by introducing the rank bound technique and more examples.
+
+\section{Fooling Set Examples} \label{sec:fooling-set-eg}
+
+\begin{example}
+  Greater Than
+  \begin{align*}
+    & \mathtt{GT}_n : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}^n \\
+    & \mathtt{GT}_n(x,y) = \left \{
+      \begin{array}{ll}
+        1  & \mbox{if } x \geq y \\
+        0 & \mbox{otherwise}
+        \end{array}
+      \right.
+  \end{align*}
+\end{example}
+
+First we look at $\mathtt{GT}_n$ which is $1$ when $x \geq y$ for using the integer representations of $x$ and $y$. We can easily choose the fooling set to be $S = \{ (z, z)\ |\ z \in \{0,1\}^n \}$, the set of pairs of inputs with the same bit vector. To see why this is a fooling set consider the characteristic matrix of $\mathtt{GT}_n$ where the rows and columns are ordered by their integer value (note: the fooling set is bolded).
+
+\begin{equation*}
+  M_{\mathtt{GT}_n} =
+  \begin{bmatrix}
+  \textbf{1} & 0 & \cdots & 0 \\
+  1 & \textbf{1} & \cdots & 0 \\
+  \vdots & \vdots & \ddots & \vdots \\
+  1 & 1 & \cdots & \textbf{1}
+  \end{bmatrix}
+\end{equation*}
+
+\vspace{0.3cm}
+
+This clearly forms a fooling set since each element maps to the same result, $f(z,z) = 1$, and given two pairs $(z_1, z_1), (z_2, z_2)$ either $(z_1, z_2)$ or $(z_2, z_1)$ is in the top right of the matrix and has the value zero. Further since the size of $S$ is $|X|$ and as we saw previously each element in the fooling set must exist in its own f-monochromatic rectangle then, $D(\mathtt{GT_n}) \geq \lceil{log(|S|)}\rceil = n$. We can do slightly better if we also count 0-rectangles $D(\mathtt{GT_n}) \geq \lceil{log(|S| + 1)}\rceil = n + 1$. We know this is tight since the simplest protocol for $\mathtt{GT_n}$ involves one of the participants passing the entirety of their input $|x| \in X = n$ to the other and then a one bit response.
+
+\begin{example}
+  Disjointness
+  \begin{align*}
+    & \mathtt{DISJ}_n : \mathcal{P}({1,\ldots,n}) \times \mathcal{P}({1,\ldots,n}) \rightarrow \{0,1\}^n \\
+    & \mathtt{DISJ}_n(x,y) = \left \{
+      \begin{array}{ll}
+        1  & \mbox{if } x \cap y = \varnothing \\
+        0 & \mbox{otherwise}
+        \end{array}
+      \right.
+  \end{align*}
+\end{example}
+
+Next we consider $\mathtt{DISJ}_n$, that is the function producing $1$ when $x,y \in \mathcal{P}({1,\ldots,n})$ such that $x \cap y = \varnothing$. Again we select a straight forward fooling set $S = \{(X, \overline{X})\ |\ X \in \mathcal{P}({1,\ldots,n})\}$ where $\overline{X}$ is the compliment of the set $X$. To see that this is a fooling set consider that for any two members of the fooling set, say $(A, \overline{A})$ and $(B, \overline{B})$, $A$ and $B$ must be different. That is,
+
+\begin{equation*}
+  \exists z.(z \in A \land z \notin B) \lor (z \in B \land z \notin A)
+\end{equation*}
+
+Either case implies that $z$ is in the compliment of $B$ or $A$ respectively, which in turn implies that a pair at the corner of the corresponding rectangle $(A, \overline{B})$ (resp. $(B, \overline{A})$) is not disjoint and the value of the disjointness function would be 0 as required. We conclude that the complexity is bounded from below by $\lceil{log(2^n + 1)}\rceil = n + 1$ which is again tight due to the trivial implementation of the protocol.
+
+\begin{example}
+  Inner Product
+  \begin{align*}
+    & \mathtt{IP}_n : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\} \\
+    & \mathtt{IP}_n(x, y) = \bigoplus_{i=1}^n x_i \land y_i
+  \end{align*}
+\end{example}
+
+Finally we examine the inner product function, $\mathtt{IP}_n$, where the fooling set method fails to provide a good lower bound. $\mathtt{IP}_n$ takes the bitwise $\land$ of each bit position from two bit vectors of length $n$ and then performs a fold over the resulting bit vector with $\oplus$. The output of the function is the single bit result.
+
+To construct the fooling set for $\mathtt{IP}_n$ we pick one of the $n$ bits, flip it and pair it with its duplicate, i.e. $S = \{ (x', x') | i \in 1 \ldots n, x' = \langle \0_1, \ldots 0_{i-1},1,0_{i+1}, \ldots, 0_n \rangle \}$. Each of these pairs clearly results in the desired value and when paired with an other $x'$ the $\land$ of each bit will result in all zeros due to the unique position of the flipped bit in each vector. Unfortunately, because we can only reliably use a single bit to achiever our ends there are only $n$ pairs which gives us the weaker lower bound $log_2(n+1)$.
+
+\section{Fooling Sets For Random Functions} \label{sec:fooling-set-random}
+
+Now that there's a sense that fooling sets might not work particularly well for some functions it might be nice to get a better picture of how frequently they are effective for finding a lower bound. We will consider the probability that a fooling set for random function
+
+\bibliographystyle{abbrv}
+\bibliography{1}
+
+\end{document}
