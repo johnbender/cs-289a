@@ -3,7 +3,12 @@
 \usepackage{amsmath}
 \usepackage{scribe}
 
-\newcommand[0]
+\newcommand{\matrixB}[0]{
+    \begin{bmatrix}
+      0 & 0 \\
+      1 & 1 \\
+    \end{bmatrix}
+}
 
 \begin{document}
 
@@ -123,7 +128,120 @@ We also know that the number of candidate fooling sets for a function $f$ is ${2
 \end{align*}
 \end{proof}
 
-So we are left with very little in the way of confidence with the fooling set if we wish to prove a lower bound for function we are interested in.
+So we are left with very little in the way of confidence with the fooling set if we wish to prove a lower bound for a function we are interested in. Next we'll examine a different technique that relies on establishing the rank of the characteristic matrix for the function under consideration.
+
+\section{Matrix Rank} \label{sec:matrix-rank}
+
+\begin{definition}
+  Matrix rank is the size of the largest set of linearly independent rows (or columns) for a given matrix. For $M \in F^{n \times m}$ where $F$ is an arbitrary field $rk_{F}(M) = min \{ k' : M = AB, A \in F^{n \times k}, B \in F^{k \times m} \}$. When the field subscript is omitted the field is assumed to be the reals.
+\end{definition}
+
+We are primarily interested in boolean matrices (i.e. matrices over the field $F_2$) and the impact of selecting this (or other) fields will be considered in later lectures. To make this distinction clear consider the following matrix:
+
+\begin{example}
+Matrix Rank:
+\begin{equation*}
+  M =
+  \begin{bmatrix}
+    1 & 1 & 1 & 1 \\
+    1 & 1 & 0 & 0 \\
+    1 & 0 & 1 & 0 \\
+    1 & 0 & 0 & 1
+  \end{bmatrix}
+\end{equation*}
+\end{example}
+
+Here the rank of the matrix over $F_2$ is 3 since the first row can be constructed as a linear combination of the last three (recall that $1 + 1 + 1 = 0$ in $F_2$), but in the rank of the matrix over the reals is four since none of the rows can be constructed using a combination of the others.
+
+Further consider the identity matrix and the matrix of ones, where the rank values are over any field.
+
+\begin{example}
+Identity and Ones Matrices:
+\begin{align*}
+  I_n =
+  \begin{bmatrix}
+  1 & 0 & \cdots & 0 \\
+  0 & 1 & \cdots & \vdots \\
+  \vdots & \vdots & \ddots & 0 \\
+  0 & \cdots & 0 & 1
+  \end{bmatrix}
+  &&
+  J_n =
+  \begin{bmatrix}
+  1 & 1 & \cdots & 1 \\
+  1 & 1 & \cdots & \vdots \\
+  \vdots & \vdots & \ddots & 1 \\
+  1 & \cdots & 1 & 1
+  \end{bmatrix}
+  \\
+  \\
+  rk_{F}(I_n) = n
+  &&
+  rk_{F}(J_n) = 1
+\end{align*}
+\end{example}
+
+Next we define two operations of interest in later discussions and how the rank of matrices changes (or doesn't) under those operations.
+
+\begin{definition}
+  Tensor Product:
+  \begin{equation*}
+    A \otimes B = [A_{i,j}B_{i',j'}]_{(i, i'),(j,j')}
+  \end{equation*}
+\end{definition}
+
+\begin{example}
+  Tensor Product Example:
+  \begin{equation*}
+    \begin{bmatrix}
+      0 & 1 \\
+      1 & 0 \\
+    \end{bmatrix}
+    &&
+    \otimes
+    \matrixB
+    &&
+    =
+    \begin{bmatrix}
+      0 \cdot \matrixB & 1 \cdot \matrixB \\
+      1 \cdot \matrixB & 0 \cdot \matrixB
+    \end{bmatrix}
+  \end{equation*}
+\end{example}
+
+\begin{definition}
+  Entry-wise Product:
+
+  \begin{equation*}
+    A \cdot B = [A_{i,j}B_{i,j}]
+  \end{equation*}
+\end{definition}
+
+\begin{example}
+  Entry-wise Product Example:
+  \begin{equation*}
+    \begin{bmatrix}
+      0 & 1 \\
+      1 & 0 \\
+    \end{bmatrix}
+    &&
+    \cdot
+    \matrixB
+    &&
+    =
+    \begin{bmatrix}
+      0 \cdot 0 & 1 \cdot 0 \\
+      1 \cdot 1 & 0 \cdot 1
+    \end{bmatrix}
+  \end{equation*}
+\end{example}
+
+For each of these operations and for matrices over fields we have the following facts:
+
+\begin{fact}
+
+\end{fact}
+
 
 \bibliographystyle{abbrv}
 \bibliography{1}
