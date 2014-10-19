@@ -1,11 +1,7 @@
 \documentclass[usletter]{article}
-\usepackage{graphicx}
-\usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{scribe}
-\usepackage[margin=1.5in]{geometry}
 
 \newcommand[0]
 
@@ -87,7 +83,47 @@ To construct the fooling set for $\mathtt{IP}_n$ we pick one of the $n$ bits, fl
 
 \section{Fooling Sets For Random Functions} \label{sec:fooling-set-random}
 
-Now that there's a sense that fooling sets might not work particularly well for some functions it might be nice to get a better picture of how frequently they are effective for finding a lower bound. We will consider the probability that a fooling set for random function
+Since we have a sense that fooling sets might not work particularly well for some functions it might be nice to get a better picture of how frequently they are effective for finding a lower bound. We will consider the probability that a fooling set for a random function meets some basic threshold. In particular we will prove the following theorem.
+
+\begin{theorem}
+For a random function $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ and the function that takes functions to their fooling sets, $fs : (\{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}) \rightarrow S$, we have
+
+\begin{equation*}
+\Pr\left[ |fs(s)| \geq 10n \right] \leq \left(\frac{2}{3}\right)^{n^{2}}
+\end{equation*}
+\end{theorem}
+
+That is, we will show that the probability that the size of the fooling set exceeds $10n$ for most random functions is very low. This is also the probability that a corresponding protocol will have a lower bound of greater than $log_2(10n)$. Coupled with the high probability we derived in the first lecture that the complexity of a given protocol will be greater than or equal to $n$ (the size of the inputs) we will be left with low confidence in the fooling set approach.
+
+\begin{proof}
+  First we establish the probability that given $S$ is a fooling set for some function $f$. We start by fixing $S = \{(x_1, y_1), \ldots, (x_s, y_s)\}$ such that all $x$ are distinct and all $y$ are distinct and establishing a probability for whether that $S$ is a fooling set for $f$.
+
+\begin{align*}
+\Pr_f\left[  S \in \mathsf{FS}(f) \right] &=
+  \left( \frac{2}{2^{|S|}} \right) \cdot \left( \frac{3}{4} \right)^{{|S| \choose 2}}
+\end{align*}
+
+Where $\mathsf{FS}(f)$ is the set of all fooling sets for $f$, the probability that $S$ is in that set is determined by the probability of two independent events that align with the definition of a fooling set. First, $\left( \frac{2}{2^{|S|}} \right)$ is the probability that the fooling sets combination of $x$s and $y$s all result in the same output result from $f$, i.e. all zeros or all ones. Second, $\left( \frac{3}{4} \right)^{{|S| \choose 2}}$ is the probability that the other corners of the rectangle formed by any two pairs of inputs from $S$ will contain the ``offending'' value. That is, there are three ways that the other two corners could be configured with at least one offending value (e.g. assuming the value for the pairs in $S$ is 1 then $(0,1)$, $(0,0)$, $(1,0)$) which we raise to the power of the number of ways to choose any two elements in $S$ to form the rectangle because for every pairing of elements in $S$ they must exhibit this property.
+
+\begin{align*}
+\Pr_f\left[  S \in \mathsf{FS}(f) \right]
+  &= \left( \frac{2}{2^{|S|}} \right) \cdot \left( \frac{3}{4} \right)^{{|S| \choose 2}} \\
+  &= 2 \left( \frac{1}{\sqrt{3}} \right)^{|S|} \cdot \left( \frac{3}{2} \right)^{|S|^2} \\
+  &\ll \left( \frac{3}{2} \right)^{|S|^2}
+\end{align*}
+
+We also know that the number of candidate fooling sets for a function $f$ is ${2^n \choose |S|}^2$ where the two choices are for a set of $x$s and a set of $y$s. As a result we can establish the probability that $f$ has a fooling set $S$ of at least $|S|$.
+
+\begin{align*}
+\Pr_f\left[ \exists S. S \in \mathsf{FS}(f) \land |S| > x \right]
+  &= \Pr_f\left[ \exists S. S \in \mathsf{FS}(f) \land |S| = x \right] \\
+  &= {2^n \choose x}^2 \cdot \left( \frac{3}{2} \right)^{x^2} \\
+  &= 2^{2nx - log_2(\frac{2}{\sqrt{3}})x^2} \\
+  &< \left( \frac{2}{3} \right)^{n^2} \mathsf{for}\ x = 10n
+\end{align*}
+\end{proof}
+
+So we are left with very little in the way of confidence with the fooling set if we wish to prove a lower bound for function we are interested in.
 
 \bibliographystyle{abbrv}
 \bibliography{1}
