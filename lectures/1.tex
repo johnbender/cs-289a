@@ -1,6 +1,9 @@
 \documentclass[usletter]{article}
+\usepackage{graphicx}
+\usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{scribe}
 
 \newcommand{\matrixB}[0]{
@@ -13,10 +16,7 @@
 \begin{document}
 
 
-\makeheader{John Bender}
-           {October 10, 2014}
-           {3}
-           {Fooling Set Efficacy and The Rank Bound}
+\makeheader{John Bender}{October 10, 2014}{3}{Fooling Set Efficacy and The Rank Bound}
 
 \noindent
 
@@ -30,8 +30,8 @@ Fooling sets as defined and described in lecture 2 are one technique for establi
     & \mathtt{GT}_n : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}^n \\
     & \mathtt{GT}_n(x,y) = \left \{
       \begin{array}{ll}
-        1  & \mbox{if } x \geq y \\
-        0 & \mbox{otherwise}
+        1  & \mathsf{if} x \geq y \\
+        0 & \mathsf{otherwise}
         \end{array}
       \right.
   \end{align*}
@@ -84,7 +84,7 @@ Either case implies that $z$ is in the compliment of $B$ or $A$ respectively, wh
 
 Finally we examine the inner product function, $\mathtt{IP}_n$, where the fooling set method fails to provide a good lower bound. $\mathtt{IP}_n$ takes the bitwise $\land$ of each bit position from two bit vectors of length $n$ and then performs a fold over the resulting bit vector with $\oplus$. The output of the function is the single bit result.
 
-To construct the fooling set for $\mathtt{IP}_n$ we pick one of the $n$ bits, flip it and pair it with its duplicate, i.e. $S = \{ (x', x') | i \in 1 \ldots n, x' = \langle \0_1, \ldots 0_{i-1},1,0_{i+1}, \ldots, 0_n \rangle \}$. Each of these pairs clearly results in the desired value and when paired with an other $x'$ the $\land$ of each bit will result in all zeros due to the unique position of the flipped bit in each vector. Unfortunately, because we can only reliably use a single bit to achiever our ends there are only $n$ pairs which gives us the weaker lower bound $log_2(n+1)$.
+To construct the fooling set for $\mathtt{IP}_n$ we pick one of the $n$ bits, flip it and pair it with its duplicate, i.e. $S = \{ (x', x') | i \in 1 \ldots n, x' = \langle 0_1, \ldots 0_{i-1},1,0_{i+1}, \ldots, 0_n \rangle \}$. Each of these pairs clearly results in the desired value and when paired with an other $x'$ the $\land$ of each bit will result in all zeros due to the unique position of the flipped bit in each vector. Unfortunately, because we can only reliably use a single bit to achiever our ends there are only $n$ pairs which gives us the weaker lower bound $log_2(n+1)$.
 
 \section{Fooling Sets For Random Functions} \label{sec:fooling-set-random}
 
@@ -197,10 +197,8 @@ Next we define two operations of interest in later discussions and how the rank 
       0 & 1 \\
       1 & 0 \\
     \end{bmatrix}
-    &&
     \otimes
     \matrixB
-    &&
     =
     \begin{bmatrix}
       0 \cdot \matrixB & 1 \cdot \matrixB \\
@@ -224,10 +222,8 @@ Next we define two operations of interest in later discussions and how the rank 
       0 & 1 \\
       1 & 0 \\
     \end{bmatrix}
-    &&
     \cdot
     \matrixB
-    &&
     =
     \begin{bmatrix}
       0 \cdot 0 & 1 \cdot 0 \\
@@ -251,7 +247,7 @@ In addition to these operations we have the following properties:
 \begin{proposition}
   Rank of the Entry-wise Product
   \begin{equation*}
-    &rk_{F}(A \cdot B) &&\leq &&(rk_{F}(A))(rk_{F}(B))
+    rk_{F}(A \cdot B) \leq (rk_{F}(A))(rk_{F}(B))
   \end{equation*}
 \end{proposition}
 
@@ -369,7 +365,7 @@ Since the rank of this matrix is also $2^n$ we have the same inequality as in th
   Which is the value of the previously defined bit operation at each position in the matrix for each pair of inputs. If we consider this from an algebraic point of view where $\land$ maps to multiplication and negation maps to subtraction from 1,  the characteristic matrix can be defined as,
 
   \begin{equation*}
-    M_{\mathtt{DISJ}_n} = \left[ \prod_{i=1}^{n} (1 - x_i y_i)} \right]_{x,y \in {0,1}^n}
+    M_{\mathtt{DISJ}_n} = \left[ \prod_{i=1}^{n} (1 - x_i y_i) \right]_{x,y \in {0,1}^n}
   \end{equation*}
 
   We can show that this is the tensor power of the following matrix, by an inductive argument.
@@ -381,7 +377,7 @@ Since the rank of this matrix is also $2^n$ we have the same inequality as in th
     \end{bmatrix}^{\otimes n}
   \end{equation*}
 
-  \begin{proof} We proceed by induction on the size of the matrix $M_{\mathtt{DISJ}_1$. Base case,
+  \begin{proof} We proceed by induction on the size of the matrix $M_{\mathtt{DISJ}_1}$. Base case,
     \begin{equation*}
       M_{\mathtt{DISJ}_1} =
         \begin{bmatrix}

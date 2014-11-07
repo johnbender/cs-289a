@@ -1,0 +1,42 @@
+\documentclass[usletter]{article}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{test}
+\usepackage[margin=1.5in]{geometry}
+
+\begin{document}
+
+\makeheader{John Bender}{November 10, 2014}{1}{Midterm Examination}
+
+\begin{enumerate}
+  \item Let $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ be given by $f(x,y) = 1 \Leftrightarrow \Sigma x_i y_i \equiv 0\ (\mathsf{mod}\ 18181)$. Prove that $f$ has no fooling set larger than $n^c$, for some constant $c$.
+
+
+    TODO double check assumption that this is inner product (because the prime is odd the 0 ~ 1 with $F_2$)
+    TODO the constant?
+
+    \begin{proof}
+      We know the following:
+
+      \begin{enumerate}
+        \item $M_{\mathsf{IP}_n} = \left [ \sum_{i=1}^{n} x_i y_i \right ]$ in $\mathbb{F}_2$
+        \item $rk_{\mathbb{F}_2}\ M_{\mathsf{IP}_n} = n$
+        \item $\forall \mathbb{F}, \mathbb{K}, rk_{\mathbb{F}}\ M = rk_{\mathbb{K}}\ M$ where $\mathbb{F}, \mathbb{K}$ are finite fields.
+        \item $\forall \mathbb{F}, f.|fs(f)| \leq (1 + rk_{\mathbb{F}}\ M_f)^2$ where $M_f$ is the characteristic matrix for $f$.
+      \end{enumerate}
+
+      From the definition and (a) $f$ has can be seen as $\left [ \sum_{i=1}^{n} x_i y_i \right ]$ in $\mathbb{F}_{18181}$. Then by (b) and (c) we know that $M_f$ has rank $n$ and taken with (d) this implies that the size of the fooling set is certainly no greater than $n^3$.
+    \end{proof}
+
+
+\end{enumerate}
+
+\newpage
+
+\bibliographystyle{abbrv}
+\bibliography{1}
+
+\end{document}
