@@ -12,10 +12,31 @@
 \makeheader{John Bender}{November 10, 2014}{1}{Midterm Examination}
 
 \begin{enumerate}
+  \item How much communication do Alice and Bob need to find out deterministically if their graphs are isomorphic?
+
+  Idea: find a lower bound for $D(\mathsf{ISO}_n)$, probably $n$ which would be tight.
+
+  Idea: find a lower bound for $N(\mathsf{ISO}_n)$, probably $n$ which means that $D(\mathsf{ISO}_n)$ is $n$.
+
+  Idea: Any graph $G$ is isomorphic to itself populating the diagonal of the characteristic matrix with ones and, if some $G'$ is isomorphic to $G$ then at both points in the matrix where those graphs are related (i.e. $f(G, G')$ and $f(G', G)$) there will be ones. From this can we deduce full rank?
+
+  \item Construct a $\mathsf{P}^{\mathsf{cc}}$ communication problem.
+    We know the following:
+
+    \begin{enumerate}
+      \item A problem $\{f_n\} \in \mathsf{P}^{\mathsf{cc}}$ has a protocol tree of height at most $\log^c n$ by definition.
+      \item Since the protocol is agreed upon the protocol tree is known ahead of time.
+
+        We can define $A_n(x)$ to be the protocol tree less all the subtrees dependent on other inputs. That is we encode $x$ into the tree by removing all other branches that requires a different $x' \in X$. Since the number of node including leaves is at most $2^{(log n) + 1} - 1$ and the number of edges is one less we can encode the tree with $O(n)$ bits. Then we define the problem as finding a coordinated path through the protocol tree which can be accomplished by transmitting 0 for left and 1 for right.
+
+        TODO double check encoding
+
+    \end{enumerate}
+
   \item Let $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ be given by $f(x,y) = 1 \Leftrightarrow \Sigma x_i y_i \equiv 0\ (\mathsf{mod}\ 18181)$. Prove that $f$ has no fooling set larger than $n^c$, for some constant $c$.
 
 
-    TODO double check assumption that this is inner product (because the prime is odd the 0 ~ 1 with $F_2$)
+    TODO double check assumption that this is inner product (because the prime is odd the 0 ~ 1 with $F_2$) \\
     TODO the constant?
 
     \begin{proof}
@@ -30,6 +51,20 @@
 
       From the definition and (a) $f$ has can be seen as $\left [ \sum_{i=1}^{n} x_i y_i \right ]$ in $\mathbb{F}_{18181}$. Then by (b) and (c) we know that $M_f$ has rank $n$ and taken with (d) this implies that the size of the fooling set is certainly no greater than $n^3$.
     \end{proof}
+
+
+  \item What is the nondeterministic communication complexity of $f$ in the previous problem?
+
+    We know the following:
+
+    \begin{enumerate}
+      \item $D(\mathsf{IP}_n)$ is $n$ from notes
+      \item $N(\mathsf{IP}_n) \leq n - 1$ from notes
+      \item $N(\mathsf{\lnot IP}_n) \geq n$ from notes
+      \item Uniform distribution proof book page 12
+    \end{enumerate}
+
+    Super polylogarithmic since IP is not in $\mathsf{NP}^{cc}$, must be  $N(f) \leq D(f)$ due to construction of any ``guessing'' non-deterministic protocol. Must be $O(n^3)$? Looking for exact complexity it seems?
 
 
 \end{enumerate}
