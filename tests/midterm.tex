@@ -14,24 +14,53 @@
 \begin{enumerate}
   \item How much communication do Alice and Bob need to find out deterministically if their graphs are isomorphic?
 
-  Idea: find a lower bound for $D(\mathsf{ISO}_n)$, probably $n$ which would be tight.
+    \begin{claim}
+      $O(n)$ bits are required.
+    \end{claim}
 
-  Idea: find a lower bound for $N(\mathsf{ISO}_n)$, probably $n$ which means that $D(\mathsf{ISO}_n)$ is $n$.
+    \begin{proof}
+      We generously assume that graphs can be encoded in $|V| \cdot log(|V|)$ bits, that is without the edges at all. Then for input size $n$ we have the following:
 
-  Idea: Any graph $G$ is isomorphic to itself populating the diagonal of the characteristic matrix with ones and, if some $G'$ is isomorphic to $G$ then at both points in the matrix where those graphs are related (i.e. $f(G, G')$ and $f(G', G)$) there will be ones. From this can we deduce full rank?
+      \begin{equation}
+        |V| = \frac{n}{log(|V|)}
+      \end{equation}
+
+      We also know the following:
+
+      \begin{enumerate}
+        \item In the characteristic matrix $M_{\mathsf{ISO_n}}$ each row will have at most $\left (\frac{n}{log(|V|)}\right)!$ entries for all the re-orderings of the elements of $|V|$.
+        \item For every row $G_i$ where the entry at $G_{i,j}$ is one, there is an identical row for $G_j$ because $G_j$ will be isomorphic to the same graphs as $G_i$.
+      \end{enumerate}
+
+      By (a) and (b) we know that that rank of $M_{\mathsf{ISO_n}}$ can be at most:
+
+      \begin{equation}
+        2^n - \left (\frac{n}{log(|V|)}\right)!
+      \end{equation}
+
+      Which is essentially $2^n$ for sufficiently large $n$. Also, if the number of ones in a given row is essentially $O(1)$ then we would need at least $2^n$ other rows to find another entry at any given position in the matrix. So for sufficiently large $n$ we have:
+
+      \begin{equation}
+        rk_{\mathbb{F}_2} M_{\mathsf{ISO_n}} = O(2^n)
+      \end{equation}
+
+      And by the rank bound we have that $D(\mathsf{ISO_n}) = n + 1$ which is tight.
+    \end{proof}
 
   \item Construct a $\mathsf{P}^{\mathsf{cc}}$ communication problem.
-    We know the following:
+    \begin{proof}
+      We know the following:
 
-    \begin{enumerate}
-      \item A problem $\{f_n\} \in \mathsf{P}^{\mathsf{cc}}$ has a protocol tree of height at most $\log^c n$ by definition.
-      \item Since the protocol is agreed upon the protocol tree is known ahead of time.
+      \begin{enumerate}
+        \item A problem $\{f_n\} \in \mathsf{P}^{\mathsf{cc}}$ has a protocol tree of height at most $\log n$ by definition.
+        \item The number of nodes in the protocol tree is at most $2^{\log n} - 1$ by (a).
+        \item The number of edges in the protocol tree is at most $2^{\log n} - 2$ by (a).
+      \end{enumerate}
 
-        We can define $A_n(x)$ to be the protocol tree less all the subtrees dependent on other inputs. That is we encode $x$ into the tree by removing all other branches that requires a different $x' \in X$. Since the number of node including leaves is at most $2^{(log n) + 1} - 1$ and the number of edges is one less we can encode the tree with $O(n)$ bits. Then we define the problem as finding a coordinated path through the protocol tree which can be accomplished by transmitting 0 for left and 1 for right.
+      From the above we can define $A_n(x), B_n{x}$ to be an encoding of the protocol tree at $x$ and $y$ respectively, which requires at most $\log(2 \cdot 2^{\log n}) = \log n + 1$ by (b) and (c). Then the protocol for our complete problem is just a coordinated traversal of the tree where left is $0$ and right is $1$ requiring at most $\log n$ single bit communications.
 
-        TODO double check encoding
-
-    \end{enumerate}
+      We know that this protocol is in $\mathsf{P}^{\mathsf{cc}}$ since it requires $\log n$ bits of communication and we also know that the range of the reductions is $\{0,1\}^{2^{\log n}}$ by the encoding.
+    \end{proof}
 
   \item Let $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ be given by $f(x,y) = 1 \Leftrightarrow \Sigma x_i y_i \equiv 0\ (\mathsf{mod}\ 18181)$. Prove that $f$ has no fooling set larger than $n^c$, for some constant $c$.
 
@@ -66,12 +95,28 @@
 
     Super polylogarithmic since IP is not in $\mathsf{NP}^{cc}$, must be  $N(f) \leq D(f)$ due to construction of any ``guessing'' non-deterministic protocol. Must be $O(n^3)$? Looking for exact complexity it seems?
 
+  \item On input linear subspaces $A, B \subseteq \mathbb{F}_2^n$ prove that $\Theta(n^2)$ bits of nondeterministic communication are necessary and sufficient to check if $A$ and $B$ are orthogonal.
+
+    \begin{proof}
+      We know the following:
+
+      \begin{enumerate}
+        \item Both $A$ and $B$ can be represented as $m$ (which is order $n$) linearly independent vectors of order $n$ bits ($O(n^2)$).
+        \item $A$ and $B$ are orthogonal if $\forall x \in A, y \in B. \langle x, y \rangle = 0$ \cite{orthsub}
+        \item $N(\mathsf{IP_n}) = n + 1$
+      \end{enumerate}
+
+      By (a) we know that $O(n^2)$ bits is sufficient to check the orthogonality of the subspaces because we can send all the vectors in the linearly independent subset of $A$ and compare with the same subset of $B$.
+
+      By (b) and (c) we know that $o(n^2)$ bits is necessary since
+
+    \end{proof}
 
 \end{enumerate}
 
 \newpage
 
-\bibliographystyle{abbrv}
 \bibliography{1}
+\bibliographystyle{plain}
 
 \end{document}
