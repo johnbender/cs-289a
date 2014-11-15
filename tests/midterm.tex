@@ -19,32 +19,34 @@
     \end{claim}
 
     \begin{proof}
-      We generously assume that graphs can be encoded in $|V| \cdot log(|V|)$ bits, that is without the edges at all. Then for input size $n$ we have the following:
+      We assume that graphs can be encoded in $(|E| + |V|) \cdot log(|E| + |V|)$ bits for some constant the edges $E$, vertices $V$ and $|G| = |E| + |V|$. Then for input size $n$ we have the following:
 
-      \begin{equation}
-        |V| = \frac{n}{log(|V|)}
-      \end{equation}
+      \begin{align*}
+        n &= |E| \cdot log(|G|) + |V| \cdot log(|G|) \\
+        n - |E| \cdot log(|G|) &= |V| \cdot log(|G|) \\
+       |V| &= \frac{n - |E| \cdot log(|G|)}{log(|G|)}
+      \end{align*}
 
       We also know the following:
 
       \begin{enumerate}
-        \item In the characteristic matrix $M_{\mathsf{ISO_n}}$ each row will have at most $\left (\frac{n}{log(|V|)}\right)!$ entries for all the re-orderings of the elements of $|V|$.
-        \item For every row $G_i$ where the entry at $G_{i,j}$ is one, there is an identical row for $G_j$ because $G_j$ will be isomorphic to the same graphs as $G_i$.
+        \item In the characteristic matrix $M_{\mathsf{ISO_n}}$ each row will have at most $\left (\frac{n - |E| \cdot log(|G|)}{log(|G|)}\right)!$ entries for all the re-orderings of the vertices in the graph.
+        \item For every row $G_i$ where the entry at $i,j$ is one, there is an identical row for $G_j$ because $G_j$ will be isomorphic to the same graphs as $G_i$.
       \end{enumerate}
 
-      By (a) and (b) we know that that rank of $M_{\mathsf{ISO_n}}$ can be at most:
+      By (a) and (b) we know that that rank of $M_{\mathsf{ISO_n}}$ will be:
 
       \begin{equation}
-        2^n - \left (\frac{n}{log(|V|)}\right)!
+        2^n - \left (\frac{n - |E| \cdot log(|G|)}{log(|G|)}\right)!
       \end{equation}
 
-      Which is essentially $2^n$ for sufficiently large $n$. Also, if the number of ones in a given row is essentially $O(1)$ then we would need at least $2^n$ other rows to find another entry at any given position in the matrix. So for sufficiently large $n$ we have:
+      Which is essentially $2^n$ for sufficiently large $n$. Also, if the number of ones in a given row is essentially $o(1)$ then we would need $O(2^n)$ other rows to find another entry at any given position in the matrix. So for sufficiently large $n$ we have:
 
       \begin{equation}
         rk_{\mathbb{F}_2} M_{\mathsf{ISO_n}} = O(2^n)
       \end{equation}
 
-      And by the rank bound we have that $D(\mathsf{ISO_n}) = n + 1$ which is tight.
+      And by the rank bound we have that $D(\mathsf{ISO_n}) = O(n)$ which is tight.
     \end{proof}
 
   \item Construct a $\mathsf{P}^{\mathsf{cc}}$ communication problem.
@@ -52,21 +54,19 @@
       We know the following:
 
       \begin{enumerate}
-        \item A problem $\{f_n\} \in \mathsf{P}^{\mathsf{cc}}$ has a protocol tree of height at most $\log n$ by definition.
-        \item The number of nodes in the protocol tree is at most $2^{\log n} - 1$ by (a).
-        \item The number of edges in the protocol tree is at most $2^{\log n} - 2$ by (a).
+        \item For a problem $\{f_n\} \in \mathsf{P}^{\mathsf{cc}}$, a fixed $f_n$ has a protocol tree of height at most $\log^c n$ by the definition of $\mathsf{P}^{\mathsf{cc}}$.
+        \item The number of nodes in the protocol tree is at most $2^{\log^c n} - 1$ by (a).
+        \item The number of edges in the protocol tree is at most $2^{\log^c n} - 2$ by (a).
       \end{enumerate}
 
-      From the above we can define $A_n(x), B_n{x}$ to be an encoding of the protocol tree at $x$ and $y$ respectively, which requires at most $\log(2 \cdot 2^{\log n}) = \log n + 1$ by (b) and (c). Then the protocol for our complete problem is just a coordinated traversal of the tree where left is $0$ and right is $1$ requiring at most $\log n$ single bit communications.
+      With the above we can define $A_n(x), B_n(y)$ to be an encoding of the protocol tree at $x$ and $y$ respectively. This restriction on the tree makes the number of nodes linear in the size of the height, $2h$, since at each of the nodes for Alice and Bob for $A_n$ and $B_n$ respectively only one side of the branch is needed.
 
-      We know that this protocol is in $\mathsf{P}^{\mathsf{cc}}$ since it requires $\log n$ bits of communication and we also know that the range of the reductions is $\{0,1\}^{2^{\log n}}$ by the encoding.
+      Then the encoding of a single node or edge requires at most $\log(4 \log^c n) = \lceil \log (\log^c n) + 2 \rceil$ bits. As a result we have at most $(4 \log^c n) \cdot \lceil \log (\log^c n) + 2 \rceil$ bits for an encoding of the tree. Then the protocol for our complete problem is just a coordinated traversal of the tree where left is $0$ and right is $1$ requiring at most $\log^cn$ single bit communications.
+
+      We know that this protocol is in $\mathsf{P}^{\mathsf{cc}}$ since it requires $\log^c n$ bits of communication and we also know that the range of the reductions is $\{0,1\}^{{(2 \cdot \log^c n) \cdot \lceil \log (\log^c n) + 2 \rceil}$ by the encoding.
     \end{proof}
 
   \item Let $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ be given by $f(x,y) = 1 \Leftrightarrow \Sigma x_i y_i \equiv 0\ (\mathsf{mod}\ 18181)$. Prove that $f$ has no fooling set larger than $n^c$, for some constant $c$.
-
-
-    TODO double check assumption that this is inner product (because the prime is odd the 0 ~ 1 with $F_2$) \\
-    TODO the constant?
 
     \begin{proof}
       We know the following:
@@ -80,7 +80,6 @@
 
       From the definition and (a) $f$ has can be seen as $\left [ \sum_{i=1}^{n} x_i y_i \right ]$ in $\mathbb{F}_{18181}$. Then by (b) and (c) we know that $M_f$ has rank $n$ and taken with (d) this implies that the size of the fooling set is certainly no greater than $n^3$.
     \end{proof}
-
 
   \item What is the nondeterministic communication complexity of $f$ in the previous problem?
 
@@ -101,17 +100,29 @@
       We know the following:
 
       \begin{enumerate}
-        \item Both $A$ and $B$ can be represented as $m$ (which is order $n$) linearly independent vectors of order $n$ bits ($O(n^2)$).
-        \item $A$ and $B$ are orthogonal if $\forall x \in A, y \in B. \langle x, y \rangle = 0$ \cite{orthsub}
-        \item $N(\mathsf{IP_n}) = n + 1$
+        \item Both $A$ and $B$ can be represented as their basis which contains $m$ (which is order $n$) linearly independent vectors of order $n$ bits ($O(n^2)$).
+        \item $A$ and $B$ are orthogonal if $\forall x \in A, y \in B. \langle x, y \rangle = 0$, from \cite{orthsub}
+        \item $N(\mathsf{IP_n}) = O(n)$
       \end{enumerate}
 
-      By (a) we know that $O(n^2)$ bits is sufficient to check the orthogonality of the subspaces because we can send all the vectors in the linearly independent subset of $A$ and compare with the same subset of $B$.
+      By (a), (b) and (c) we know that $O(n^2)$ bits is sufficient to check the orthogonality of the subspaces because we can run the inner product protocol $n$ times, once for each vector in $A$ or $B$.
 
-      By (b) and (c) we know that $o(n^2)$ bits is necessary since
-
+      Further, we can't do any better than the $n$ nondeterministic bits required for each inner product so if we were to reduce the required communication it would have to be by sending fewer vectors from our basis, e.g. $\log^c m$ vectors. Assume, that we can verify the orthogonality of $A$ and $B$ by sending fewer than $m$ vectors, this implies that there is some number of $m'$ that forms a basis for $A$ or $B$, but this contradicts our assumption that we were making use of the basis initially. So $O(n^2)$ is also necessary.
     \end{proof}
 
+  \item Alice and Bob have a matrix over some finite field. How much communication do they need to determine with accuracy 99\% if their matrices are inverses of each other?
+
+    \begin{proof}
+      We know the following, assuming Alice's matrix is $A$ and Bob's is $B$:
+
+      \begin{enumerate}
+        \item There is exactly one matrix such that $AB = I$
+        \item $R_{\epsilon}(EQ_n) = \lceil \log \frac{1}{\epsilon} \rceil + 1$
+        \item This problem is equivalent to finding the inverse of $A$ and then comparing for equality with $B$ (or vice-versa).
+      \end{enumerate}
+
+      By (a), (b) and (c) we know that this problem has worst case complexity $\lceil \log \frac{1}{\epsilon} \rceil + 1$, which is a constant for a fixed $\epsilon$.
+    \end{proof}
 \end{enumerate}
 
 \newpage
