@@ -11,6 +11,8 @@
 
 \makeheader{John Bender}{November 10, 2014}{1}{Midterm Examination}
 
+Only two sources outside the class notes were consulted, \cite{textbook} and \cite{orthsub}.
+
 \begin{enumerate}
   \item How much communication do Alice and Bob need to find out deterministically if their graphs are isomorphic?
 
@@ -19,25 +21,24 @@
     \end{claim}
 
     \begin{proof}
-      We assume that graphs can be encoded in $(|E| + |V|) \cdot log(|E| + |V|)$ bits for some constant the edges $E$, vertices $V$ and $|G| = |E| + |V|$. Then for input size $n$ we have the following:
+      We assume that graphs can be encoded in $(|E| + |V|) \cdot log(|E| + |V|) \cdot c$ bits for the edges $E$, vertices $V$ and $|G| = |E| + |V|$. Then for input size $n$ we have the following:
 
       \begin{align*}
         n &= |E| \cdot log(|G|) + |V| \cdot log(|G|) \\
-        n - |E| \cdot log(|G|) &= |V| \cdot log(|G|) \\
-       |V| &= \frac{n - |E| \cdot log(|G|)}{log(|G|)}
+       |V| &= \frac{n}{log(|G|)} - |E|
       \end{align*}
 
       We also know the following:
 
       \begin{enumerate}
-        \item In the characteristic matrix $M_{\mathsf{ISO_n}}$ each row will have at most $\left (\frac{n - |E| \cdot log(|G|)}{log(|G|)}\right)!$ entries for all the re-orderings of the vertices in the graph.
+        \item In the characteristic matrix $M_{\mathsf{ISO_n}}$ each row will have at most $\left (\frac{n}{log(|G|) \cdot c} - |E|\right)!$ entries for all the re-orderings of the vertices in the graph (after adding the constant back in).
         \item For every row $G_i$ where the entry at $i,j$ is one, there is an identical row for $G_j$ because $G_j$ will be isomorphic to the same graphs as $G_i$.
       \end{enumerate}
 
       By (a) and (b) we know that that rank of $M_{\mathsf{ISO_n}}$ will be:
 
       \begin{equation}
-        2^n - \left (\frac{n - |E| \cdot log(|G|)}{log(|G|)}\right)!
+        2^n - \left (\frac{n}{log(|G|) \cdot c} - |E|\right)!
       \end{equation}
 
       Which is essentially $2^n$ for sufficiently large $n$. Also, if the number of ones in a given row is essentially $o(1)$ then we would need $O(2^n)$ other rows to find another entry at any given position in the matrix. So for sufficiently large $n$ we have:
@@ -63,7 +64,7 @@
 
       Then the encoding of a single node or edge requires at most $\log(4 \log^c n) = \lceil \log (\log^c n) + 2 \rceil$ bits. As a result we have at most $(4 \log^c n) \cdot \lceil \log (\log^c n) + 2 \rceil$ bits for an encoding of the tree. Then the protocol for our complete problem is just a coordinated traversal of the tree where left is $0$ and right is $1$ requiring at most $\log^cn$ single bit communications.
 
-      We know that this protocol is in $\mathsf{P}^{\mathsf{cc}}$ since it requires $\log^c n$ bits of communication and we also know that the range of the reductions is $\{0,1\}^{{(2 \cdot \log^c n) \cdot \lceil \log (\log^c n) + 2 \rceil}$ by the encoding.
+      We know that this protocol is in $\mathsf{P}^{\mathsf{cc}}$ since it requires $\log^c n$ bits of communication and we also know that the range of the reductions is $\{0,1\}^{{(4 \cdot \log^c n) \cdot \lceil \log (\log^c n) + 2 \rceil}$ by the encoding.
     \end{proof}
 
   \item Let $f : \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ be given by $f(x,y) = 1 \Leftrightarrow \Sigma x_i y_i \equiv 0\ (\mathsf{mod}\ 18181)$. Prove that $f$ has no fooling set larger than $n^c$, for some constant $c$.
@@ -72,13 +73,12 @@
       We know the following:
 
       \begin{enumerate}
-        \item $M_{\mathsf{IP}_n} = \left [ \sum_{i=1}^{n} x_i y_i \right ]$ in $\mathbb{F}_2$
-        \item $rk_{\mathbb{F}_2}\ M_{\mathsf{IP}_n} = n$
+        \item $rk_{\mathbb{F}_2}\ M_{\mathsf{coIP}_n} = n$
         \item $\forall \mathbb{F}, \mathbb{K}, rk_{\mathbb{F}}\ M = rk_{\mathbb{K}}\ M$ where $\mathbb{F}, \mathbb{K}$ are finite fields.
         \item $\forall \mathbb{F}, f.|fs(f)| \leq (1 + rk_{\mathbb{F}}\ M_f)^2$ where $M_f$ is the characteristic matrix for $f$.
       \end{enumerate}
 
-      From the definition and (a) $f$ has can be seen as $\left [ \sum_{i=1}^{n} x_i y_i \right ]$ in $\mathbb{F}_{18181}$. Then by (b) and (c) we know that $M_f$ has rank $n$ and taken with (d) this implies that the size of the fooling set is certainly no greater than $n^3$.
+      From the definition and (a) $f$ has can be seen as $\mathsf{coIP}_n$ in $\mathbb{F}_{18181}$. Then by (b) and (c) we know that $M_f$ has rank $n$ and taken with (d) this implies that the size of the fooling set is certainly no greater than $n^3$.
     \end{proof}
 
   \item What is the nondeterministic communication complexity of $f$ in the previous problem?
@@ -86,13 +86,10 @@
     We know the following:
 
     \begin{enumerate}
-      \item $D(\mathsf{IP}_n)$ is $n$ from notes
-      \item $N(\mathsf{IP}_n) \leq n - 1$ from notes
-      \item $N(\mathsf{\lnot IP}_n) \geq n$ from notes
-      \item Uniform distribution proof book page 12
+      \item $RS_{\mu}(\mathsf{coIP}_n)$ is $\frac{1}{2^{n-1}}$ in $\mathbb{F}_2$ for the uniform distribution, due to the orthogonality of the subspaces encompassing a given zero-rectangle.
     \end{enumerate}
 
-    Super polylogarithmic since IP is not in $\mathsf{NP}^{cc}$, must be  $N(f) \leq D(f)$ due to construction of any ``guessing'' non-deterministic protocol. Must be $O(n^3)$? Looking for exact complexity it seems?
+    In $\mathbb{F}_{18181}$ we expect the same property to hold so the distribution over any given rectangle is bounded by $\frac{1}{2^{n-1}}$ which gives us a lower bound on the nondeterministic communication complexity of $\lceil \log 2^{n-1} \rceil $ which is tight.
 
   \item On input linear subspaces $A, B \subseteq \mathbb{F}_2^n$ prove that $\Theta(n^2)$ bits of nondeterministic communication are necessary and sufficient to check if $A$ and $B$ are orthogonal.
 
@@ -105,9 +102,9 @@
         \item $N(\mathsf{IP_n}) = O(n)$
       \end{enumerate}
 
-      By (a), (b) and (c) we know that $O(n^2)$ bits is sufficient to check the orthogonality of the subspaces because we can run the inner product protocol $n$ times, once for each vector in $A$ or $B$.
+      By (a), (b) and (c) we know that $O(n^2)$ bits is sufficient to check the orthogonality of the subspaces because we can run the inner product protocol $n$ times, once for each vector in the basis for $A$ or $B$.
 
-      Further, we can't do any better than the $n$ nondeterministic bits required for each inner product so if we were to reduce the required communication it would have to be by sending fewer vectors from our basis, e.g. $\log^c m$ vectors. Assume, that we can verify the orthogonality of $A$ and $B$ by sending fewer than $m$ vectors, this implies that there is some number of $m'$ that forms a basis for $A$ or $B$, but this contradicts our assumption that we were making use of the basis initially. So $O(n^2)$ is also necessary.
+      Further, we can't do any better than the $n$ nondeterministic bits required for each inner product so if we were to reduce the required communication it would have to be by sending fewer vectors from our basis. Assume, that we can verify the orthogonality of $A$ and $B$ by sending fewer than $m$ vectors, this implies that there is some number of $m'$ that forms a basis for $A$ or $B$, but this contradicts our assumption that we were making use of the basis initially. So $O(n^2)$ is also necessary.
     \end{proof}
 
   \item Alice and Bob have a matrix over some finite field. How much communication do they need to determine with accuracy 99\% if their matrices are inverses of each other?
