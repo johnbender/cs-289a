@@ -55,11 +55,11 @@
 
     \begin{enumerate}
       \item We know that $R_{\frac{1}{2} - \delta}(f) \cdot \lceil \frac{1}{2\delta^2} \cdot \ln \frac{1}{\epsilon} \rceil \geq R_{\epsilon}(f)$, by error reduction.
-      \item We know that $R_{\epsilon}(f) \geq \Omega(\mathsf{deg}_{\frac{1}{3}}(f))$, from the pattern matrix method.
+      \item We know that $R_{\epsilon}(f) \geq \Omega(\mathsf{deg}_{\epsilon}(f))$, from the pattern matrix method.
     \end{enumerate}
 
     \begin{proof}
-      Assume that there exists a function $f$ such that no two constants exist that satisfy $c_{\epsilon,\delta}\mathsf{deg}_{\epsilon}(f) \leq \mathsf{deg}_{\delta}(f) \leq C_{\epsilon,\delta}\mathsf{deg}_{\epsilon}(f)$. Without loss of generality we assume that $\mathsf{deg}_{\epsilon}(f) = \Omega(\mathsf{deg}_{\delta}(f))$ which means that we should select $\delta$ for our error when computing $f$, because the polynomial approximation at that error will require fewer bits of communication by (b). But then this contradicts (a) which implies there is always a constant factor of difference in communication between two errors for the same function.
+      Assume that there exists a function $f$ such that no two constants exist that satisfy $c_{\epsilon,\delta}\mathsf{deg}_{\epsilon}(f) \leq \mathsf{deg}_{\delta}(f) \leq C_{\epsilon,\delta}\mathsf{deg}_{\epsilon}(f)$. Without loss of generality we assume that $\mathsf{deg}_{\epsilon}(f) = \Omega(\mathsf{deg}_{\delta}(f))$ which means that we get a greater than constant difference in the bound when using $\delta$. But then this contradicts (a) which says there is always a constant factor difference between two different error parameters due to error reduction.
     \end{proof}
 
 
